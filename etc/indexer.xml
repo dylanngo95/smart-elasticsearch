@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Indexer/etc/indexer.xsd">
+    <indexer id="url_rewrite" view_id="url_rewrite" class="Smart\ElasticSearch\Indexer\UrlRewriteIndexer">
+        <title translate="true">Url Rewrite</title>
+        <description translate="true">Url rewrite index</description>
+    </indexer>
+</config>
