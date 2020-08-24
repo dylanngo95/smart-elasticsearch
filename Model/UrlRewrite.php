@@ -15,6 +15,6 @@ class UrlRewrite extends AbstractModel
 
     protected function _construct()
     {
-        $this->_init(\Smart\ElasticSearch\Model\ResourceModel\UrlRewrite::class);
+        $this->_init(ResourceModel\UrlRewrite::class);
     }
 }

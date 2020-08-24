@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Smart\ElasticSearch\Indexer\Action;
 
 
-use Magento\CatalogUrlRewrite\Model\ResourceModel\Category\Product;
-use Magento\CatalogUrlRewrite\Model\ResourceModel\Category\ProductCollection;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\DB\Select;
+use Smart\ElasticSearch\Logger\Logger;
+use Smart\ElasticSearch\Model\UrlRewrite;
+use Smart\ElasticSearch\Model\UrlRewriteFactory;
 
 /**
  * Class Rows
@@ -17,6 +19,10 @@ use Magento\Framework\DB\Adapter\AdapterInterface;
 class Rows
 {
     /**
+     * Url rewrite index table name
+     */
+    const MAIN_INDEX_TABLE = 'url_rewrite_index';
+    /**
      * @var ResourceConnection
      */
     protected $resource;
@@ -24,98 +30,48 @@ class Rows
      * @var AdapterInterface
      */
     protected $connection;
+    /**
+     * @var UrlRewriteFactory
+     */
+    private $urlRewriteFactory;
 
     /**
-     * @var ProductCollection
+     * @var Logger
      */
-    protected $categoryProductCollection;
+    private $logger;
 
-    /**
-     * @var Product
-     */
-    protected $categoryProductResourceModel;
-
-    /**
-     * Url rewrite index table name
-     */
-    const MAIN_INDEX_TABLE = 'url_rewrite_index';
-
-    /**
-     * Url rewrite index temp table name
-     */
-    const TEMPORARY_TABLE_SUFFIX = '_tmp';
-
-    /**
-     * Rows constructor.
-     * @param ResourceConnection $resource
-     * @param AdapterInterface $connection
-     * @param ProductCollection $categoryProductCollection
-     * @param Product $product
-     */
     public function __construct(
-        ResourceConnection $resource,
-        AdapterInterface $connection,
-        ProductCollection $categoryProductCollection,
-        Product $product
+        ResourceConnection $resourceConnection,
+        UrlRewriteFactory $urlRewriteFactory,
+        Logger $logger
     )
     {
-        $this->resource = $resource;
-        $this->connection = $resource->getConnection();
-        $this->categoryProductCollection = $categoryProductCollection;
-        $this->categoryProductResourceModel = $product;
+        $this->resource = $resourceConnection;
+        $this->connection = $resourceConnection->getConnection();
+        $this->urlRewriteFactory = $urlRewriteFactory;
+        $this->logger = $logger;
     }
 
     /**
-     * Pass url_rewrite_id
-     *
      * @param array $entityIds
      */
-    public function index(array $entityIds = [15, 16, 17])
+    public function index($entityIds)
     {
-        foreach ($entityIds as $entityId){
-            $tmp = $this->getUrlRewriteData($entityId);
+        foreach ($entityIds as $entityId) {
+            $urlRewriteSelect = $this->getUrlRewriteData($entityId);
+            if ($urlRewriteSelect) {
+                /** @var UrlRewrite $urlRewrite */
+                $urlRewrite = $this->urlRewriteFactory->create();
+                foreach ($urlRewriteSelect as $key => $value) {
+                    $urlRewrite->setData($key, $value);
+                }
+                try {
+                    $urlRewrite->save();
+                } catch (\Exception $e) {
+                    $this->logger->addWarning($e->getMessage());
+                }
+            }
         }
-    }
-
-    /**
-     * @param $entityId
-     * @return \Zend_Db_Statement_Interface
-     */
-    public function getUrlRewriteData($entityId)
-    {
-        return $this->connection->query(
-            $this->getUrlRewriteSelect($entityId),
-            null
-        );
-    }
-
-    /**
-     * @param $entityId
-     * @return \Magento\Framework\DB\Select
-     */
-    public function getUrlRewriteSelect($entityId)
-    {
-        $select = $this->connection->select()
-            ->from(
-                ['m' => $this->getTable('url_rewrite')],
-                []
-            )->joinLeft(
-                ['p' => $this->getTable('catalog_url_rewrite_product_category')],
-                'm.url_rewrite_id = p.url_rewrite_id',
-                []
-            )->where(
-                'm.url_rewrite_id = ?',
-                $entityId
-            );
-        return $select;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMainTable()
-    {
-        return $this->getTable(self::MAIN_INDEX_TABLE);
     }
 
     /**
@@ -127,4 +83,45 @@ class Rows
         return $this->resource->getTableName($table);
     }
 
+    /**
+     * @return string
+     */
+    public function getMainTable()
+    {
+        return $this->getTable(self::MAIN_INDEX_TABLE);
+    }
+
+    /**
+     * @param $entityId
+     * @return Select
+     */
+    public function getUrlRewriteSelect($entityId)
+    {
+        return $this->connection->select()
+            ->from(
+                ['m' => $this->getTable('url_rewrite')],
+                [
+                    'm.entity_type', 'm.entity_id', 'm.request_path', 'm.target_path', 'm.redirect_type', 'm.store_id', 'm.description', 'm.is_autogenerated', 'm.metadata', 'p.category_id', 'p.product_id'
+                ]
+            )->joinLeft(
+                ['p' => $this->getTable('catalog_url_rewrite_product_category')],
+                'm.url_rewrite_id = p.url_rewrite_id',
+                []
+            )->where(
+                'm.url_rewrite_id = ?',
+                $entityId
+            );
+    }
+
+    /**
+     * @param $entityId
+     * @return array
+     */
+    public function getUrlRewriteData($entityId)
+    {
+        return $this->connection->fetchRow(
+            $this->getUrlRewriteSelect($entityId),
+            null
+        );
+    }
 }

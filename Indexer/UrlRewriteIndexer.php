@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace Smart\ElasticSearch\Indexer;
 
 use Magento\Framework\Indexer\IndexerInterfaceFactory;
-use Smart\ElasticSearch\Indexer\Action\Full;
 use Smart\ElasticSearch\Indexer\Action\Rows;
 
 
@@ -17,7 +16,7 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
 {
 
     /**
-     * @var Full
+     * @var Rows
      */
     private $indexFull;
 
@@ -27,16 +26,15 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
     private $indexRows;
 
     public function __construct(
-        Full $indexFull
+        Rows $indexRows
     )
     {
-        $this->indexFull = $indexFull;
+        $this->indexRows = $indexRows;
     }
 
     public function executeFull()
     {
-        $this->indexFull->getTable('url_rewrite');
-        $a = 1;
+        $this->indexRows->index(['15', '16', '17', '18']);
     }
 
     /**
