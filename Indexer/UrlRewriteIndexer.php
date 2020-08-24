@@ -5,7 +5,9 @@ declare(strict_types = 1);
 namespace Smart\ElasticSearch\Indexer;
 
 use Magento\Framework\Indexer\IndexerInterfaceFactory;
+use Smart\ElasticSearch\Indexer\Action\Full;
 use Smart\ElasticSearch\Indexer\Action\Rows;
+use Smart\ElasticSearch\Logger\Logger;
 
 
 /**
@@ -16,24 +18,32 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
 {
 
     /**
-     * @var Rows
+     * @var Full
      */
     private $indexFull;
-
     /**
      * @var Rows
      */
     private $indexRows;
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     public function __construct(
-        Rows $indexRows
+        Rows $indexRows,
+        Full $indexFull,
+        Logger $logger
     )
     {
         $this->indexRows = $indexRows;
+        $this->indexFull = $indexFull;
+        $this->logger = $logger;
     }
 
     public function executeFull()
     {
+        $this->logger->info('executeFull');
         $this->indexRows->index(['15', '16', '17', '18']);
     }
 
@@ -45,7 +55,8 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
      */
     public function executeList(array $ids)
     {
-        // TODO: Implement executeList() method.
+        $this->logger->info('executeList');
+        $this->indexRows->index($ids);
     }
 
     /**
@@ -56,7 +67,8 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
      */
     public function executeRow($id)
     {
-        // TODO: Implement executeRow() method.
+        $this->logger->info('executeRow');
+        $this->indexRows->index([$id]);;
     }
 
     /**
@@ -68,6 +80,8 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
      */
     public function execute($ids)
     {
-        // TODO: Implement execute() method.
+        $this->logger->info('execute');
+        $this->logger->info(print_r($ids, true));
+        $this->indexRows->index($ids);
     }
 }
