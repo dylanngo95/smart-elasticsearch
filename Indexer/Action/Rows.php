@@ -40,6 +40,12 @@ class Rows
      */
     private $logger;
 
+    /**
+     * Rows constructor.
+     * @param ResourceConnection $resourceConnection
+     * @param UrlRewriteFactory $urlRewriteFactory
+     * @param Logger $logger
+     */
     public function __construct(
         ResourceConnection $resourceConnection,
         UrlRewriteFactory $urlRewriteFactory,
@@ -72,6 +78,14 @@ class Rows
                 }
             }
         }
+    }
+
+    /**
+     * @param $urls
+     */
+    public function indexWithProduct($urls)
+    {
+
     }
 
     /**

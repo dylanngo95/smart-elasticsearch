@@ -12,6 +12,11 @@ use Magento\Framework\Model\AbstractModel;
  */
 class UrlRewrite extends AbstractModel
 {
+    /**
+     * event prefix for dispatch
+     * @var string
+     */
+    protected $_eventPrefix = 'url_rewrite_index';
 
     protected function _construct()
     {
