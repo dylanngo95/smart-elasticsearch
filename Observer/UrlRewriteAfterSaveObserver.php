@@ -1,10 +1,9 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Smart\ElasticSearch\Observer;
 
-
-use Magento\Catalog\Model\Product;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Event\Observer;
@@ -32,8 +31,7 @@ class UrlRewriteAfterSaveObserver implements ObserverInterface
 
     public function __construct(
         ResourceConnection $resourceConnection
-    )
-    {
+    ) {
         $this->resourceConnection = $resourceConnection;
         $this->connection = $resourceConnection->getConnection();
     }
