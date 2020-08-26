@@ -76,7 +76,6 @@ class UrlRewriteAfterSaveObserver implements ObserverInterface
         }
 
         $urls = $observer->getEvent()->getUrl();
-
         $this->deleteOldUrls($urls);
 
         $data = [];

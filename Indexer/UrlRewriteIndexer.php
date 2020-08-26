@@ -54,8 +54,7 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
 
     public function executeFull()
     {
-        $this->logger->info('executeFull');
-        $this->indexRows->index(['15', '16', '17', '18']);
+        $this->indexFull->indexAll();
     }
 
     /**
@@ -66,7 +65,6 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
      */
     public function executeList(array $ids)
     {
-        $this->logger->info('executeList');
         $this->indexRows->index($ids);
     }
 
@@ -78,7 +76,6 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
      */
     public function executeRow($id)
     {
-        $this->logger->info('executeRow');
         $this->indexRows->index([$id]);;
     }
 
@@ -91,16 +88,10 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
      */
     public function execute($ids)
     {
-        $this->logger->info('execute');
-        $this->logger->info(print_r($ids, true));
-
         $indexer = $this->indexerRegistry->get(self::INDEXER_ID);
         if ($indexer->isInvalid()) {
             return;
         }
-
-        $this->logger->info('execute finish');
-
         $this->indexRows->index($ids);
     }
 }
