@@ -9,7 +9,9 @@ use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
+use Smart\ElasticSearch\Logger\Logger;
 
 /**
  * Class UrlRewriteAfterSaveObserver
@@ -18,6 +20,16 @@ use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
 class UrlRewriteAfterSaveObserver implements ObserverInterface
 {
     /**
+     * Url rewrite index table name
+     */
+    const MAIN_INDEX_TABLE = 'url_rewrite_index';
+
+    /**
+     * Indexer Id
+     */
+    const INDEXER_ID = 'url_rewrite';
+
+    /**
      * @var ResourceConnection;
      */
     protected $resourceConnection;
@@ -25,21 +37,31 @@ class UrlRewriteAfterSaveObserver implements ObserverInterface
      * @var AdapterInterface
      */
     protected $connection;
+    /**
+     * @var IndexerRegistry
+     */
+    private $indexerRegistry;
 
     /**
-     * Url rewrite index table name
+     * @var Logger
      */
-    const MAIN_INDEX_TABLE = 'url_rewrite_index';
+    private $logger;
 
     /**
      * UrlRewriteAfterSaveObserver constructor.
      * @param ResourceConnection $resourceConnection
+     * @param IndexerRegistry $indexerRegistry
+     * @param Logger $logger
      */
     public function __construct(
-        ResourceConnection $resourceConnection
+        ResourceConnection $resourceConnection,
+        IndexerRegistry $indexerRegistry,
+        Logger $logger
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->connection = $resourceConnection->getConnection();
+        $this->indexerRegistry = $indexerRegistry;
+        $this->logger = $logger;
     }
 
     /**
@@ -48,6 +70,11 @@ class UrlRewriteAfterSaveObserver implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+        $indexer = $this->indexerRegistry->get(self::INDEXER_ID);
+        if ($indexer->isScheduled()) {
+            return;
+        }
+
         $urls = $observer->getEvent()->getUrl();
 
         $this->deleteOldUrls($urls);
@@ -63,7 +90,7 @@ class UrlRewriteAfterSaveObserver implements ObserverInterface
                 $data
             );
         } catch (\Exception $e) {
-            $tmp = $e;
+            $this->logger->info($e->getMessage());
         }
     }
 
