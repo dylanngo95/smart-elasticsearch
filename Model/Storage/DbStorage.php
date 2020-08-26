@@ -10,6 +10,10 @@ use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewriteFactory;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class DbStorage
+ * @package Smart\ElasticSearch\Model\Storage
+ */
 class DbStorage extends \Magento\UrlRewrite\Model\Storage\DbStorage
 {
 
@@ -42,7 +46,7 @@ class DbStorage extends \Magento\UrlRewrite\Model\Storage\DbStorage
     protected function doReplace(array $urls): array
     {
         $result = parent::doReplace($urls);
-        $this->eventManager->dispatch('url_rewrite_save_after', ['url' => $result]);
+        $this->eventManager->dispatch('url_rewrite_save_after', ['url' => $urls]);
         return $result;
     }
 }
