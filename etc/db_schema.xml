@@ -23,6 +23,10 @@
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="url_rewrite_id"/>
         </constraint>
+        <constraint xsi:type="unique" referenceId="URL_REWRITE_REQUEST_PATH_STORE_ID">
+            <column name="request_path"/>
+            <column name="store_id"/>
+        </constraint>
         <index referenceId="URL_REWRITE_TARGET_PATH" indexType="btree">
             <column name="target_path"/>
         </index>
@@ -55,16 +59,6 @@
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="url_rewrite_id"/>
         </constraint>
-        <index referenceId="URL_REWRITE_TARGET_PATH" indexType="btree">
-            <column name="target_path"/>
-        </index>
-        <index referenceId="URL_REWRITE_STORE_ID_ENTITY_ID" indexType="btree">
-            <column name="store_id"/>
-            <column name="entity_id"/>
-        </index>
-        <index referenceId="URL_REWRITE_ENTITY_ID" indexType="btree">
-            <column name="entity_id"/>
-        </index>
     </table>
     <table name="url_rewrite_index_replica" resource="default" engine="innodb" comment="Url Rewrites">
         <column xsi:type="int" name="url_rewrite_id" padding="10" unsigned="true" nullable="false" identity="true"
@@ -87,16 +81,6 @@
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="url_rewrite_id"/>
         </constraint>
-        <index referenceId="URL_REWRITE_TARGET_PATH" indexType="btree">
-            <column name="target_path"/>
-        </index>
-        <index referenceId="URL_REWRITE_STORE_ID_ENTITY_ID" indexType="btree">
-            <column name="store_id"/>
-            <column name="entity_id"/>
-        </index>
-        <index referenceId="URL_REWRITE_ENTITY_ID" indexType="btree">
-            <column name="entity_id"/>
-        </index>
     </table>
 </schema>
 

@@ -105,27 +105,20 @@ class Rows
 
     /**
      * @param $entityId
-     * @return Select
+     * @return array
      */
-    public function getUrlRewriteSelect($entityId)
+    public function getUrlRewriteData($entityId)
     {
-        return $this->connection->select()
+        $select = $this->connection->select()
             ->from(
                 ['m' => $this->getTable('url_rewrite')]
             )->where(
                 'm.url_rewrite_id = ?',
                 $entityId
             );
-    }
 
-    /**
-     * @param $entityId
-     * @return array
-     */
-    public function getUrlRewriteData($entityId)
-    {
         return $this->connection->fetchRow(
-            $this->getUrlRewriteSelect($entityId),
+            $select,
             null
         );
     }

@@ -71,6 +71,7 @@ class Full
     {
         $isCreatedTmp = $this->indexTmp();
         if ($isCreatedTmp) {
+            $this->connection->dropTable(self::MAIN_INDEX_TABLE.'_replica');
             $this->connection->renameTable(self::MAIN_INDEX_TABLE, self::MAIN_INDEX_TABLE.'_replica');
             $this->connection->renameTable(self::MAIN_INDEX_TABLE_TMP, self::MAIN_INDEX_TABLE);
             $this->connection->renameTable(self::MAIN_INDEX_TABLE.'_replica', self::MAIN_INDEX_TABLE.'_tmp');

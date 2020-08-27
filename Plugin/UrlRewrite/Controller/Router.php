@@ -15,8 +15,8 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\UrlRewrite\Model\UrlFinderInterface;
-use Smart\ElasticSearch\Model\ResourceModel\UrlRewrite\Collection;
-use Smart\ElasticSearch\Model\UrlRewrite;
+use Smart\ElasticSearch\Model\ResourceModel\UrlRewrite\Collection as UrlRewriteCollection;
+use Smart\ElasticSearch\Model\ResourceModel\UrlRewrite\CollectionFactory;
 
 
 /**
@@ -27,7 +27,7 @@ class Router extends \Magento\UrlRewrite\Controller\Router
 {
 
     /**
-     * @var Collection
+     * @var CollectionFactory
      */
     private $rewriteCollection;
 
@@ -37,7 +37,7 @@ class Router extends \Magento\UrlRewrite\Controller\Router
      * @param StoreManagerInterface $storeManager
      * @param ResponseInterface $response
      * @param UrlFinderInterface $urlFinder
-     * @param Collection $rewriteCollection
+     * @param CollectionFactory $rewriteCollection
      */
     public function __construct(
         ActionFactory $actionFactory,
@@ -45,7 +45,7 @@ class Router extends \Magento\UrlRewrite\Controller\Router
         StoreManagerInterface $storeManager,
         ResponseInterface $response,
         UrlFinderInterface $urlFinder,
-        Collection $rewriteCollection
+        CollectionFactory $rewriteCollection
     )
     {
         parent::__construct($actionFactory, $url, $storeManager, $response, $urlFinder);
@@ -98,11 +98,13 @@ class Router extends \Magento\UrlRewrite\Controller\Router
      */
     public function getRewrite($requestPath, $storeId)
     {
-        return $this->rewriteCollection
-            ->load()
-            ->addFieldToFilter('request_path', [ 'eq' => $requestPath ])
-            ->addFieldToFilter('store_id', [ 'eq' => $storeId ])
+        /** @var UrlRewriteCollection $collection */
+        $collection = $this->rewriteCollection->create();
+        $result = $collection
+            ->addFieldToFilter('request_path', ['like' => substr($requestPath, 1)])
+            ->addFieldToFilter('store_id', $storeId)
             ->getFirstItem();
+        return $result;
     }
 
 }

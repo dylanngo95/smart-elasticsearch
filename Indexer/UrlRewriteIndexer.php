@@ -39,6 +39,13 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
      */
     private $indexerRegistry;
 
+    /**
+     * UrlRewriteIndexer constructor.
+     * @param Rows $indexRows
+     * @param Full $indexFull
+     * @param Logger $logger
+     * @param IndexerRegistry $indexerRegistry
+     */
     public function __construct(
         Rows $indexRows,
         Full $indexFull,
