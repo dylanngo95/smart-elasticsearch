@@ -1,5 +1,5 @@
 {
-  "name": "smart/elastic-search",
+  "name": "smart/url-rewrite-index",
   "version": "1.0.0",
   "description": "N/A",
   "type": "magento2-module",
@@ -14,7 +14,7 @@
       "registration.php"
     ],
     "psr-4": {
-      "Smart\\ElasticSearch\\": ""
+      "Smart\\UrlRewriteIndex\\": ""
     }
   }
 }

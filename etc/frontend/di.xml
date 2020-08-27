@@ -3,6 +3,6 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\UrlRewrite\Controller\Router">
         <plugin name="url_rewrite_index_match"
-                type="Smart\ElasticSearch\Plugin\UrlRewrite\Controller\Router" sortOrder="10"/>
+                type="Smart\UrlRewriteIndex\Plugin\UrlRewrite\Controller\Router" sortOrder="10"/>
     </type>
 </config>

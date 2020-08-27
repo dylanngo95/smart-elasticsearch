@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Smart\ElasticSearch\Model\Storage;
+namespace Smart\UrlRewriteIndex\Model\Storage;
 
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\App\ResourceConnection;
@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Class DbStorage
- * @package Smart\ElasticSearch\Model\Storage
+ * @package Smart\UrlRewriteIndex\Model\Storage
  */
 class DbStorage extends \Magento\UrlRewrite\Model\Storage\DbStorage
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Smart\ElasticSearch\Model\ResourceModel;
+namespace Smart\UrlRewriteIndex\Model\ResourceModel;
 
 
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 /**
  * Class UrlRewrite
- * @package Smart\ElasticSearch\Model\ResourceModel
+ * @package Smart\UrlRewriteIndex\Model\ResourceModel
  */
 class UrlRewrite extends AbstractDb
 {

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Smart\ElasticSearch\Model;
+namespace Smart\UrlRewriteIndex\Model;
 
 use Magento\Framework\Model\AbstractModel;
 
 /**
  * Class UrlRewrite
- * @package Smart\ElasticSearch\Model
+ * @package Smart\UrlRewriteIndex\Model
  */
 class UrlRewrite extends AbstractModel
 {

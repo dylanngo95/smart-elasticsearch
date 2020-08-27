@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Mview/etc/mview.xsd">
-    <view id="url_rewrite" class="Smart\ElasticSearch\Indexer\UrlRewriteIndexer" group="indexer">
+    <view id="url_rewrite" class="Smart\UrlRewriteIndex\Indexer\UrlRewriteIndexer" group="indexer">
         <subscriptions>
             <table name="url_rewrite" entity_column="url_rewrite_id" />
         </subscriptions>

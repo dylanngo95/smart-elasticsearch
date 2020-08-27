@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Smart\ElasticSearch\Logger;
+namespace Smart\UrlRewriteIndex\Logger;
 
 class Handler extends \Magento\Framework\Logger\Handler\Base
 {

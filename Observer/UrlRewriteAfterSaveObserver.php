@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Smart\ElasticSearch\Observer;
+namespace Smart\UrlRewriteIndex\Observer;
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
@@ -11,11 +11,11 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
-use Smart\ElasticSearch\Logger\Logger;
+use Smart\UrlRewriteIndex\Logger\Logger;
 
 /**
  * Class UrlRewriteAfterSaveObserver
- * @package Smart\ElasticSearch\Observer
+ * @package Smart\UrlRewriteIndex\Observer
  */
 class UrlRewriteAfterSaveObserver implements ObserverInterface
 {

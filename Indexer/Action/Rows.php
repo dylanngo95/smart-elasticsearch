@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Smart\ElasticSearch\Indexer\Action;
+namespace Smart\UrlRewriteIndex\Indexer\Action;
 
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
-use Smart\ElasticSearch\Logger\Logger;
-use Smart\ElasticSearch\Model\UrlRewrite;
-use Smart\ElasticSearch\Model\UrlRewriteFactory;
+use Smart\UrlRewriteIndex\Logger\Logger;
+use Smart\UrlRewriteIndex\Model\UrlRewrite;
+use Smart\UrlRewriteIndex\Model\UrlRewriteFactory;
 
 /**
  * Class Rows
- * @package Smart\ElasticSearch\Indexer\Action
+ * @package Smart\UrlRewriteIndex\Indexer\Action
  */
 class Rows
 {

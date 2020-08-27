@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Smart\ElasticSearch\Plugin\UrlRewrite\Controller;
+namespace Smart\UrlRewriteIndex\Plugin\UrlRewrite\Controller;
 
 
 use Magento\Framework\App\ActionFactory;
@@ -15,13 +15,13 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\UrlRewrite\Model\UrlFinderInterface;
-use Smart\ElasticSearch\Model\ResourceModel\UrlRewrite\Collection as UrlRewriteCollection;
-use Smart\ElasticSearch\Model\ResourceModel\UrlRewrite\CollectionFactory;
+use Smart\UrlRewriteIndex\Model\ResourceModel\UrlRewrite\Collection as UrlRewriteCollection;
+use Smart\UrlRewriteIndex\Model\ResourceModel\UrlRewrite\CollectionFactory;
 
 
 /**
  * Class Router
- * @package Smart\ElasticSearch\Plugin\UrlRewrite\Controller
+ * @package Smart\UrlRewriteIndex\Plugin\UrlRewrite\Controller
  */
 class Router extends \Magento\UrlRewrite\Controller\Router
 {

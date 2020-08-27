@@ -2,18 +2,18 @@
 
 declare(strict_types = 1);
 
-namespace Smart\ElasticSearch\Indexer;
+namespace Smart\UrlRewriteIndex\Indexer;
 
 use Magento\Framework\Indexer\IndexerInterfaceFactory;
 use Magento\Framework\Indexer\IndexerRegistry;
-use Smart\ElasticSearch\Indexer\Action\Full;
-use Smart\ElasticSearch\Indexer\Action\Rows;
-use Smart\ElasticSearch\Logger\Logger;
+use Smart\UrlRewriteIndex\Indexer\Action\Full;
+use Smart\UrlRewriteIndex\Indexer\Action\Rows;
+use Smart\UrlRewriteIndex\Logger\Logger;
 
 
 /**
  * Class UrlRewriteIndexer
- * @package Smart\ElasticSearch\Indexer
+ * @package Smart\UrlRewriteIndex\Indexer
  */
 class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \Magento\Framework\Mview\ActionInterface
 {
@@ -99,6 +99,6 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
         if ($indexer->isInvalid()) {
             return;
         }
-        $this->indexRows->index($ids);
+//        $this->indexRows->index($ids);
     }
 }

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Smart\ElasticSearch\Model\ResourceModel\UrlRewrite;
+namespace Smart\UrlRewriteIndex\Model\ResourceModel\UrlRewrite;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 /**
  * Class Collection
- * @package Smart\ElasticSearch\Model\ResourceModel\UrlRewrite
+ * @package Smart\UrlRewriteIndex\Model\ResourceModel\UrlRewrite
  */
 class Collection extends AbstractCollection
 {
@@ -20,8 +20,8 @@ class Collection extends AbstractCollection
     {
         parent::_construct();
         $this->_init(
-            \Smart\ElasticSearch\Model\UrlRewrite::class,
-            \Smart\ElasticSearch\Model\ResourceModel\UrlRewrite::class
+            \Smart\UrlRewriteIndex\Model\UrlRewrite::class,
+            \Smart\UrlRewriteIndex\Model\ResourceModel\UrlRewrite::class
         );
     }
 }

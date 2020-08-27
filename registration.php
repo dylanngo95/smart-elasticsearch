@@ -2,4 +2,4 @@
 
 use Magento\Framework\Component\ComponentRegistrar;
 
-ComponentRegistrar::register(ComponentRegistrar::MODULE, 'Smart_ElasticSearch', __DIR__);
+ComponentRegistrar::register(ComponentRegistrar::MODULE, 'Smart_UrlRewriteIndex', __DIR__);
