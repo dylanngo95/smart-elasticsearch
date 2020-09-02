@@ -11,6 +11,8 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
+use Smart\UrlRewriteIndex\ElasticSearch\Client\ElasticSearch;
+use Smart\UrlRewriteIndex\Helper\Data;
 use Smart\UrlRewriteIndex\Logger\Logger;
 
 /**
@@ -43,24 +45,40 @@ class UrlRewriteAfterSaveObserver implements ObserverInterface
     private $indexerRegistry;
 
     /**
+     * @var ElasticSearch
+     */
+    private $elasticSearch;
+
+    /**
      * @var Logger
      */
     private $logger;
 
     /**
+     * @var Data
+     */
+    private $config;
+
+    /**
      * UrlRewriteAfterSaveObserver constructor.
      * @param ResourceConnection $resourceConnection
      * @param IndexerRegistry $indexerRegistry
+     * @param ElasticSearch $elasticSearch
+     * @param Data $config
      * @param Logger $logger
      */
     public function __construct(
         ResourceConnection $resourceConnection,
         IndexerRegistry $indexerRegistry,
+        ElasticSearch $elasticSearch,
+        Data $config,
         Logger $logger
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->connection = $resourceConnection->getConnection();
         $this->indexerRegistry = $indexerRegistry;
+        $this->elasticSearch = $elasticSearch;
+        $this->config = $config;
         $this->logger = $logger;
     }
 
@@ -83,6 +101,27 @@ class UrlRewriteAfterSaveObserver implements ObserverInterface
             $data[] = $url->toArray();
         }
 
+        if ($this->config->isEnableElasticSearch()) {
+            $this->indexWithElasticSearch($data);
+        } else {
+            $this->indexWithMySQL($data);
+        }
+
+    }
+
+    /**
+     * @param array $data
+     */
+    private function indexWithElasticSearch($data)
+    {
+        $this->elasticSearch->index($data);
+    }
+
+    /**
+     * @param array $data
+     */
+    private function indexWithMySQL($data)
+    {
         try {
             $this->connection->insertMultiple(
                 $this->getTable(self::MAIN_INDEX_TABLE),
