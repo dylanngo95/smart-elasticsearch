@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Smart\UrlRewriteIndex\ElasticSearch\Client;
 
-
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Smart\UrlRewriteIndex\Helper\Data;
 use Smart\UrlRewriteIndex\Logger\Logger;
 
+/**
+ * Class ElasticSearch
+ * @package Smart\UrlRewriteIndex\ElasticSearch\Client
+ */
 class ElasticSearch
 {
     /**
@@ -21,11 +24,6 @@ class ElasticSearch
      * @var Data
      */
     private $config;
-
-    /**
-     * @var string
-     */
-    private $indexId = '1';
 
     /**
      * @var Logger
@@ -42,25 +40,43 @@ class ElasticSearch
         ClientBuilder $clientBuilder,
         Data $config,
         Logger $logger
-    )
-    {
-        $this->client = $clientBuilder->build();
+    ) {
         $this->config = $config;
         $this->logger = $logger;
+        $this->client = $clientBuilder
+            ->setHosts($this->getConfig())
+            ->setLogger($this->logger)
+            ->build();
     }
 
-    public function index($values)
+    /**
+     * @return array[]
+     */
+    private function getConfig()
     {
+        return [
+            [
+                'host' => $this->config->getHost(),
+                'post' => $this->config->getPort()
+            ]
+        ];
+    }
+
+    /**
+     * @param array $values
+     */
+    public function index(array $values)
+    {
+        $indexName = $this->config->getIndexName();
         foreach ($values as $value) {
             $params = [
-                'index' => $this->config->getIndexName(),
-                'id' => $this->indexId,
+                'index' => $indexName,
+                'id' => $value['url_rewrite_id'],
                 'body' => $value
             ];
             $response = $this->client->index(
                 $params
             );
-            $this->logger->info(print_r($response, true));
         }
     }
 }

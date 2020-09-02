@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Smart\UrlRewriteIndex\Indexer\Action;
 
-
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
 use Smart\UrlRewriteIndex\Logger\Logger;
 use Smart\UrlRewriteIndex\Model\UrlRewrite;
 use Smart\UrlRewriteIndex\Model\UrlRewriteFactory;
@@ -54,8 +52,7 @@ class Rows
         ResourceConnection $resourceConnection,
         UrlRewriteFactory $urlRewriteFactory,
         Logger $logger
-    )
-    {
+    ) {
         $this->resource = $resourceConnection;
         $this->connection = $resourceConnection->getConnection();
         $this->urlRewriteFactory = $urlRewriteFactory;
@@ -73,7 +70,7 @@ class Rows
                 /** @var UrlRewrite $urlRewrite */
                 $urlRewrite = $this->urlRewriteFactory->create();
                 foreach ($urlRewriteSelect as $key => $value) {
-                    if ($key != self::KEY){
+                    if ($key != self::KEY) {
                         $urlRewrite->setData($key, $value);
                     }
                 }

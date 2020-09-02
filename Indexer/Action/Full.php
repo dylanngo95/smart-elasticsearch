@@ -6,6 +6,9 @@ namespace Smart\UrlRewriteIndex\Indexer\Action;
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Indexer\SaveHandler\Batch;
+use Smart\UrlRewriteIndex\ElasticSearch\Client\ElasticSearch;
+use Smart\UrlRewriteIndex\Helper\Data;
 use Smart\UrlRewriteIndex\Logger\Logger;
 use Smart\UrlRewriteIndex\Model\UrlRewriteFactory;
 
@@ -15,7 +18,6 @@ use Smart\UrlRewriteIndex\Model\UrlRewriteFactory;
  */
 class Full
 {
-
     /**
      * Url rewrite index table name
      */
@@ -47,21 +49,51 @@ class Full
     private $urlRewriteFactory;
 
     /**
+     * @var ElasticSearch
+     */
+    private $elasticSearch;
+
+    /**
      * @var Logger
      */
     private $logger;
 
+    /**
+     * @var Data
+     */
+    private $config;
+
+    /**
+     * @var Batch
+     */
+    private $batch;
+
+    /**
+     * Full constructor.
+     * @param ResourceConnection $resourceConnection
+     * @param AdapterInterface $connection
+     * @param UrlRewriteFactory $urlRewriteFactory
+     * @param ElasticSearch $elasticSearch
+     * @param Logger $logger
+     * @param Data $config
+     * @param Batch $batch
+     */
     public function __construct(
         ResourceConnection $resourceConnection,
         AdapterInterface $connection,
         UrlRewriteFactory $urlRewriteFactory,
-        Logger $logger
-    )
-    {
+        ElasticSearch $elasticSearch,
+        Logger $logger,
+        Data $config,
+        Batch $batch
+    ) {
         $this->resource = $resourceConnection;
         $this->connection = $resourceConnection->getConnection();
         $this->urlRewriteFactory = $urlRewriteFactory;
+        $this->elasticSearch = $elasticSearch;
         $this->logger = $logger;
+        $this->config = $config;
+        $this->batch = $batch;
     }
 
     /**
@@ -69,12 +101,45 @@ class Full
      */
     public function indexAll()
     {
+        if ($this->config->isEnableElasticSearch()) {
+            $this->indexElasticSearch();
+        } else {
+            $this->indexMySQL();
+        }
+    }
+
+    /**
+     * indexElasticSearch
+     */
+    private function indexElasticSearch()
+    {
+        $urlRewrites = $this->rebuildUrlRewriteIndex();
+        if ($urlRewrites) {
+            foreach ($this->batch->getItems($urlRewrites, $this->config->getBatchSize()) as $urlRewrite) {
+                $this->elasticSearch->index($urlRewrite[0]);
+            }
+        }
+    }
+
+    /**
+     * @return \Generator
+     */
+    private function rebuildUrlRewriteIndex()
+    {
+        yield $this->getUrlRewriteData();
+    }
+
+    /**
+     * indexMySQL
+     */
+    private function indexMySQL()
+    {
         $isCreatedTmp = $this->indexTmp();
         if ($isCreatedTmp) {
-            $this->connection->dropTable(self::MAIN_INDEX_TABLE.'_replica');
-            $this->connection->renameTable(self::MAIN_INDEX_TABLE, self::MAIN_INDEX_TABLE.'_replica');
+            $this->connection->dropTable(self::MAIN_INDEX_TABLE . '_replica');
+            $this->connection->renameTable(self::MAIN_INDEX_TABLE, self::MAIN_INDEX_TABLE . '_replica');
             $this->connection->renameTable(self::MAIN_INDEX_TABLE_TMP, self::MAIN_INDEX_TABLE);
-            $this->connection->renameTable(self::MAIN_INDEX_TABLE.'_replica', self::MAIN_INDEX_TABLE.'_tmp');
+            $this->connection->renameTable(self::MAIN_INDEX_TABLE . '_replica', self::MAIN_INDEX_TABLE . '_tmp');
             $this->connection->truncateTable(self::MAIN_INDEX_TABLE_TMP);
         }
     }
@@ -87,8 +152,7 @@ class Full
         $isCreatedTmp = false;
         $urlRewrites = $this->getUrlRewriteData();
         $data = [];
-        foreach ($urlRewrites as $urlRewrite)
-        {
+        foreach ($urlRewrites as $urlRewrite) {
             $urlRewrite['url_rewrite_id'] = null;
             $data[] = $urlRewrite;
         }
@@ -128,5 +192,4 @@ class Full
     {
         return $this->resource->getTableName($table);
     }
-
 }

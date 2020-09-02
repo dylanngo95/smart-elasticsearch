@@ -4,12 +4,10 @@ declare(strict_types = 1);
 
 namespace Smart\UrlRewriteIndex\Indexer;
 
-use Magento\Framework\Indexer\IndexerInterfaceFactory;
 use Magento\Framework\Indexer\IndexerRegistry;
 use Smart\UrlRewriteIndex\Indexer\Action\Full;
 use Smart\UrlRewriteIndex\Indexer\Action\Rows;
 use Smart\UrlRewriteIndex\Logger\Logger;
-
 
 /**
  * Class UrlRewriteIndexer
@@ -51,14 +49,16 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
         Full $indexFull,
         Logger $logger,
         IndexerRegistry $indexerRegistry
-    )
-    {
+    ) {
         $this->indexRows = $indexRows;
         $this->indexFull = $indexFull;
         $this->logger = $logger;
         $this->indexerRegistry = $indexerRegistry;
     }
 
+    /**
+     * executeFull
+     */
     public function executeFull()
     {
         $this->indexFull->indexAll();
@@ -83,7 +83,7 @@ class UrlRewriteIndexer implements \Magento\Framework\Indexer\ActionInterface, \
      */
     public function executeRow($id)
     {
-        $this->indexRows->index([$id]);;
+        $this->indexRows->index([$id]);
     }
 
     /**
